@@ -4,7 +4,9 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "ts-node src/index.ts"
+    "start": "ts-node src/index.ts",
+    "noUseLib": "npm start",
+    "useLib": "ts-node src/withLib.ts"
   },
   "keywords": [],
   "author": "",
