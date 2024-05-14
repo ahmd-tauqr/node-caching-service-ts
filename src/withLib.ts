@@ -2,7 +2,6 @@ import express from 'express';
 import axios from 'axios';
 import NodeCache from 'node-cache';
 
-// Define the interface for cache entries
 interface CacheEntry {
   data: Buffer;
   cachedAt: Date;
@@ -23,22 +22,19 @@ app.get('/cache/:encodedUrl', async (req, res) => {
     if (!cacheEntry) {
       const response = await axios.get(url, { responseType: 'arraybuffer' });
       const cachedAt = new Date();
-      let expiresAt = new Date(cachedAt.getTime() + 533280 * 1000); // Calculate the expires time
+      let expiresAt = new Date(cachedAt.getTime() + 533280 * 1000);
 
-      // Create new cache entry
       cacheEntry = {
         data: response.data,
         cachedAt: cachedAt,
         expiresAt: expiresAt,
       };
 
-      // Set the cache with the new entry
       cache.set(url, cacheEntry);
       cacheHit = false;
     }
 
-    // Set headers based on cache metadata
-    res.setHeader('Content-Type', 'image/jpeg'); // Set this dynamically based on the actual content type
+    res.setHeader('Content-Type', 'image/jpeg'); 
     res.setHeader('Last-Modified', cacheEntry.cachedAt.toUTCString());
     res.setHeader('Cache-Control', 'public, max-age=533280');
     res.setHeader('Expires', cacheEntry.expiresAt.toUTCString());

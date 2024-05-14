@@ -2,6 +2,7 @@ import express from 'express';
 import axios from 'axios';
 import { Cache } from './Cache';
 import { CacheEntry } from './types';
+import { getContentType } from './utils';
 
 const app = express();
 const cache = new Cache();
@@ -9,6 +10,8 @@ const cache = new Cache();
 app.get('/cache/:encodedUrl', async (req, res) => {
   const { encodedUrl } = req.params;
   const url = Buffer.from(encodedUrl, 'base64').toString('ascii');
+  const contentType = getContentType(url);
+
   const cacheKey = url;
 
   try {
@@ -31,7 +34,7 @@ app.get('/cache/:encodedUrl', async (req, res) => {
     }
 
     if (cacheEntry && cacheEntry.data) {
-      res.setHeader('Content-Type', 'image/jpeg');
+      res.setHeader('Content-Type', contentType);
       res.setHeader('Last-Modified', cacheEntry.cachedAt.toUTCString());
       res.setHeader('Cache-Control', 'public, max-age=533280');
       res.setHeader('Expires', cacheEntry.expiresAt.toUTCString());
